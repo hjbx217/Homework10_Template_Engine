@@ -8,17 +8,18 @@ const OUTPUT_DIR = path.resolve(__dirname, "output")
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
+var answersHTML = []
+
 function typeOfEmployee() {
     inquirer.prompt([
         {
             type: "checkbox", 
             name: "role",
             message: "What role does the employee have?",
-            choices: ["Manager", "Engineer", "Intern", "None of the Above"]
+            choices: ["Manager", "Engineer", "Intern", "Complete"]
         }
     ]).then(function(answers) {
         console.log(answers)
-       // for(var i=0; i<answers.length; i++) {
             if (answers.role[0] === "Manager") {
             console.log("Manager")
         
@@ -29,9 +30,12 @@ function typeOfEmployee() {
         } else if (answers.role[0] === "Intern") {
 
             internQuestions();
-        }  else {
+        } else if (answers.role[0] === "Complete") {
+            console.log(answersHTML)
+            fs.writeFileSync(outputPath, render(answersHTML), "UTF-8")
+            process.exit(0)
+        } 
             
-        }
     });
 }
 
@@ -57,7 +61,11 @@ function managerQuestions() {
             name: "officeNumber",
             message: "What is your manager's office number?"
         }
-    ])
+    ]).then(function(answers) {
+        var manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+        answersHTML.push(manager) //pushes answers into the HTML
+        typeOfEmployee()
+    }); 
 }
 
 
@@ -65,57 +73,59 @@ function engineerQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            name: "eName",
+            name: "name",
             message: "What is your engineer's name?"
         },
         {
             type: "input",
-            name: "eID",
+            name: "id",
             message: "What is your engineer's ID?"
         },
         {
             type: "input",
-            name: "eEmail",
+            name: "email",
             message: "What is your engineer's email?"
         },
         {
             type: "input",
-            name: "eGitHub",
+            name: "github",
             message: "What is your engineer's GitHub username?"
         }
-    ]);
+    ]).then(function(answers) { 
+        var engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+        answersHTML.push(engineer)
+        typeOfEmployee()
+});
 }
 
 function internQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            name: "iName",
+            name: "name",
             message: "What is your intern's name?"
         },
         {
             type: "input",
-            name: "iID",
+            name: "id",
             message: "What is your intern's ID?"
         },
         {
             type: "input",
-            name: "iEmail",
+            name: "email",
             message: "What is your intern's email?"
         },
         {
             type: "input",
-            name: "iSchool",
+            name: "school",
             message: "What is your intern's school?"
         }
-    ]);
+    ]).then(function(answers) { 
+        var intern = new Intern(answers.name, answers.id, answers.email, answers.school)
+        answersHTML.push(intern)
+        typeOfEmployee();
+    });
 }
-
-//creating route to HTML file
-
-/*app.get("/manager", function(req,res) {
-    res.sendFile(path.join(__dirname, "manager.html")); //path join will safely join the paths together
-}); */
 
 typeOfEmployee();
 
