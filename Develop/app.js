@@ -18,7 +18,8 @@ function typeOfEmployee() {
         }
     ]).then(function(answers) {
         console.log(answers)
-        if (answers.role[0] === "Manager") {
+       // for(var i=0; i<answers.length; i++) {
+            if (answers.role[0] === "Manager") {
             console.log("Manager")
         
             managerQuestions();
@@ -28,34 +29,37 @@ function typeOfEmployee() {
         } else if (answers.role[0] === "Intern") {
 
             internQuestions();
+        }  else {
+            
         }
-    })
+    });
 }
 
 function managerQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            name: "mName",
+            name: "name",
             message: "What is your manager's name?"
         },
         {
             type: "input",
-            name: "mID",
+            name: "id",
             message: "What is your manager's ID?"
         },
         {
             type: "input",
-            name: "mEmail",
+            name: "email",
             message: "What is your manager's email?"
         },
         {
             type: "input",
-            name: "mOffice",
+            name: "officeNumber",
             message: "What is your manager's office number?"
         }
     ])
 }
+
 
 function engineerQuestions() {
     inquirer.prompt([
@@ -106,6 +110,12 @@ function internQuestions() {
         }
     ]);
 }
+
+//creating route to HTML file
+
+/*app.get("/manager", function(req,res) {
+    res.sendFile(path.join(__dirname, "manager.html")); //path join will safely join the paths together
+}); */
 
 typeOfEmployee();
 
